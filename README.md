@@ -56,6 +56,7 @@ The resolver determines which database adapter to use based on the following pri
 
 - `VALTHERA_<NAME>` - Adapter identifier in format `"package"` or `"package:variant"` (e.g., `VALTHERA_MASTER=dir:dir`)
 - `VALTHERA_<NAME>_OPTS` - JSON array of constructor options for the adapter
+- `VALTHERA_RESOLVER_MAX_DEPTH` - Maximum depth to search for adapters
 
 ### Dynamic install
 

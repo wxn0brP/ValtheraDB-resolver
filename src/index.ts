@@ -24,7 +24,7 @@ export async function createAdapter(opts: Opts, retry = false) {
     }
 
     const exits = await checkPkgExists({
-        maxDepth: +process.env.DB_RESOLVER_MAX_DEPTH || 3,
+        maxDepth: +process.env.VALTHERA_RESOLVER_MAX_DEPTH || 3,
         pkg
     });
 

@@ -17,17 +17,20 @@ export function getConfig(opts: Opts) {
 
     let { name } = opts;
 
-    const envName = `VALTHERA_${name.toUpperCase()}`;
-    if (name && process.env[envName]) {
-        const optsEnv = process.env[`${envName}_OPTS`];
-        const dbOpts: any[] = optsEnv ?
-            JSON.parse(optsEnv) :
-            opts.opts ?? [];
+    if (name) {
+        const envName = `VALTHERA_${name.toUpperCase()}`;
 
-        return {
-            ...parseId(process.env[envName]!),
-            opts: dbOpts
-        };
+        if (process.env[envName]) {
+            const optsEnv = process.env[`${envName}_OPTS`];
+            const dbOpts: any[] = optsEnv ?
+                JSON.parse(optsEnv) :
+                opts.opts ?? [];
+
+            return {
+                ...parseId(process.env[envName]!),
+                opts: dbOpts
+            };
+        }
     }
 
     if (opts.def)

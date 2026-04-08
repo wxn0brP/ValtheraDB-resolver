@@ -7,4 +7,5 @@ export interface Opts {
     force?: string;
 }
 
-export type Adapters = Record<string, ActionsBaseInterface>;
+export type Adapter = (...args: any[]) => Promise<ActionsBaseInterface> | ActionsBaseInterface;
+export type Adapters = Record<string, Adapter>;

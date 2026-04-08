@@ -1,27 +1,14 @@
-
-import type { ActionsBaseInterface } from "@wxn0brp/db-core/types/action";
-import { Opts } from "./types";
+import { checkPkgExists } from "./module";
+import { Adapter, Opts } from "./types";
 import { getConfig } from "./utils";
 
-const cache = new Map<string, ActionsBaseInterface>();
-const adapterNotInstalled = Symbol("adapterNotInstalled");
+const cache = new Map<string, Adapter>();
 
 async function loadAdapter(pkg: string) {
     if (cache.has(pkg))
         return cache.get(pkg)!;
 
-    const mod = await import(`@wxn0brp/db-storage-${pkg}`).catch((error) => {
-        if (
-            error.code === "ERR_MODULE_NOT_FOUND" &&
-            error.message.includes(`@wxn0brp/db-storage-${pkg}`)
-        )
-            return adapterNotInstalled;
-
-        throw error;
-    });
-
-    if (mod === adapterNotInstalled)
-        return mod;
+    const mod = await import(`@wxn0brp/db-storage-${pkg}`);
 
     const { DYNAMIC } = mod;
     cache.set(pkg, DYNAMIC);
@@ -36,9 +23,12 @@ export async function createAdapter(opts: Opts, retry = false) {
         return new MemoryAction();
     }
 
-    const mod = await loadAdapter(pkg);
+    const exits = await checkPkgExists({
+        maxDepth: +process.env.DB_RESOLVER_MAX_DEPTH || 3,
+        pkg
+    });
 
-    if (mod === adapterNotInstalled && !retry) {
+    if (!exits && !retry && process.env.NODE_ENV !== "production") {
         const { execSync } = await import("child_process");
         const cmdPrefix = process.isBun ? "bun add" : "npm i";
         const cmd = `${cmdPrefix} @wxn0brp/db-storage-${pkg}`;
@@ -47,6 +37,11 @@ export async function createAdapter(opts: Opts, retry = false) {
         return await createAdapter(opts, true);
     }
 
+    if (!exits)
+        throw new Error(`Adapter "${pkg}" not found`);
+
+    const mod = await loadAdapter(pkg);
+
     if (!mod)
         throw new Error(`Adapter "${pkg}" does not support resolver import`);
 
@@ -54,12 +49,5 @@ export async function createAdapter(opts: Opts, retry = false) {
     if (!adapter)
         throw new Error(`Adapter "${pkg}" variant "${variant}" not found`);
 
-    try {
-        return new adapter(...dbOpts as any);
-    } catch (error) {
-        if (error instanceof TypeError && error.message.includes("is not a constructor"))
-            return adapter(...dbOpts as any);
-
-        throw error;
-    }
+    return await adapter(...dbOpts as any);
 }

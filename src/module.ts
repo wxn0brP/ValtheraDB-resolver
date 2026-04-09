@@ -14,7 +14,7 @@ export async function checkPkgExists({
     maxDepth,
     pkg
 }: FindNodeModules) {
-    const pkgDir = join(path, "node_modules", "@wxn0brp", "db-storage-" + pkg);
+    const pkgDir = join(path, "node_modules", ...pkg.split("/"));
 
     if (await fs.access(pkgDir).then(() => true).catch(() => false))
         return true;

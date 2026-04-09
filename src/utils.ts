@@ -1,5 +1,17 @@
 import { Opts } from "./types"
 
+export function parsePkgSource(pkg: string): string {
+    // @org/pkg -> @org/pkg
+    if (pkg.startsWith("@") && pkg.includes("/"))
+        return pkg;
+
+    // @pkg -> pkg
+    if (pkg.startsWith("@"))
+        return pkg.slice(1);
+
+    return `@wxn0brp/db-storage-${pkg}`;
+}
+
 export function parseId(id: string) {
     const [pkg, variant] = id.split(":")
     return {

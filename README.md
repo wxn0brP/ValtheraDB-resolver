@@ -58,6 +58,31 @@ The resolver determines which database adapter to use based on the following pri
 - `VALTHERA_<NAME>_OPTS` - JSON array of constructor options for the adapter
 - `VALTHERA_RESOLVER_MAX_DEPTH` - Maximum depth to search for adapters
 
+### Package Resolution
+
+The resolver supports multiple package sources for flexible adapter installation:
+
+| Input Format | Resolves To | Description |
+|--------------|-------------|-------------|
+| `"sqlite"` | `@wxn0brp/db-storage-sqlite` | Default ValtheraDB adapters |
+| `"@pkg"` | `pkg` | Scoped package without organization |
+| `"@org/pkg"` | `@org/pkg` | Full scoped package name |
+
+#### Examples
+
+```typescript
+// Use official ValtheraDB SQLite adapter
+await createAdapter({ force: "sqlite" });
+
+// Use a custom adapter from npm
+await createAdapter({ force: "@my-custom-adapter" });
+
+// Use a scoped package
+await createAdapter({ force: "@company/db-adapter" });
+```
+
+This allows installation and use of adapters from different sources, not just the official `@wxn0brp/db-storage-*` packages.
+
 ### Dynamic install
 
 If the adapter is not installed and `process.env.NODE_ENV !== "production"`, it will be installed automatically.

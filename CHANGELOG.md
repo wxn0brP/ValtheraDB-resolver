@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.100.1](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.100.0...v0.100.1) (2026-04-14)
+
+
+### Features
+
+* use custom packages & optimize memory actions load ([d8db044](https://github.com/wxn0brP/ValtheraDB-resolver/commit/d8db044ccf4c42aec0f1c490c9aa096b6b510540))
+
+
+### Bug Fixes
+
+* import ([11ced8c](https://github.com/wxn0brP/ValtheraDB-resolver/commit/11ced8ce62c5ea02df2f434586f52492f6df4f8c))
+
 ## 0.100.0 (2026-04-08)
 
 

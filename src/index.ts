@@ -1,15 +1,18 @@
-import { checkPkgExists } from "./module";
+import { createRequire } from "module";
+import { pathToFileURL } from "url";
+import { getPkgPath } from "./module";
 import { Adapter, Opts } from "./types";
 import { getConfig, parsePkgSource } from "./utils";
 
 const cache = new Map<string, Adapter>();
 let memoryActions: any = null;
 
-async function loadAdapter(pkg: string) {
+async function loadAdapter(pkg: string, pkgPath: string) {
     if (cache.has(pkg))
         return cache.get(pkg)!;
 
-    const mod = await import(pkg);
+    const resolved = createRequire(pkgPath).resolve(pkg);
+    const mod = await import(pathToFileURL(resolved).href);
 
     const { DYNAMIC } = mod;
     cache.set(pkg, DYNAMIC);
@@ -29,12 +32,12 @@ export async function createAdapter(opts: Opts, retry = false) {
 
     const pkgName = parsePkgSource(pkg);
 
-    const exits = await checkPkgExists({
+    const pkgPath = await getPkgPath({
         maxDepth: +process.env.VALTHERA_RESOLVER_MAX_DEPTH || 3,
         pkg: pkgName
     });
 
-    if (!exits && !retry && process.env.NODE_ENV !== "production") {
+    if (!pkgPath && !retry && process.env.NODE_ENV !== "production") {
         const { execSync } = await import("child_process");
         const cmdPrefix = process.isBun ? "bun add" : "npm i";
         const cmd = `${cmdPrefix} ${pkgName}`;
@@ -43,10 +46,10 @@ export async function createAdapter(opts: Opts, retry = false) {
         return await createAdapter(opts, true);
     }
 
-    if (!exits)
+    if (!pkgPath)
         throw new Error(`Adapter "${pkgName}" not found`);
 
-    const mod = await loadAdapter(pkgName);
+    const mod = await loadAdapter(pkgName, pkgPath);
 
     if (!mod)
         throw new Error(`Adapter "${pkgName}" does not support resolver import`);

@@ -8,7 +8,7 @@ interface FindNodeModules {
     depth?: number;
 }
 
-export async function checkPkgExists({
+export async function getPkgPath({
     path = process.cwd(),
     depth = 0,
     maxDepth,
@@ -17,14 +17,14 @@ export async function checkPkgExists({
     const pkgDir = join(path, "node_modules", ...pkg.split("/"));
 
     if (await fs.access(pkgDir).then(() => true).catch(() => false))
-        return true;
+        return pkgDir;
 
-    if (depth >= maxDepth) return false;
+    if (depth >= maxDepth) return null;
 
     const parent = join(path, "..");
-    if (parent === path) return false;
+    if (parent === path) return null;
 
-    return checkPkgExists({
+    return getPkgPath({
         path: parent,
         depth: depth + 1,
         maxDepth,

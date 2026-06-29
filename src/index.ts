@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 import { pathToFileURL } from "url";
+import { AdapterNotFoundError, MissingDynamicError, VariantNotFoundError } from "./errors";
 import { getPkgPath } from "./module";
 import { Adapter, Opts } from "./types";
 import { getConfig, parsePkgSource } from "./utils";
@@ -15,6 +16,10 @@ async function loadAdapter(pkg: string, pkgPath: string) {
     const mod = await import(pathToFileURL(resolved).href);
 
     const { DYNAMIC } = mod;
+
+    if (!DYNAMIC)
+        throw new MissingDynamicError(pkg);
+
     cache.set(pkg, DYNAMIC);
     return DYNAMIC;
 }
@@ -47,16 +52,13 @@ export async function createAdapter(opts: Opts, retry = false) {
     }
 
     if (!pkgPath)
-        throw new Error(`Adapter "${pkgName}" not found`);
+        throw new AdapterNotFoundError(pkgName);
 
     const mod = await loadAdapter(pkgName, pkgPath);
 
-    if (!mod)
-        throw new Error(`Adapter "${pkgName}" does not support resolver import`);
+    const factory = mod[variant];
+    if (!factory)
+        throw new VariantNotFoundError(pkgName, variant, Object.keys(mod));
 
-    const adapter = mod[variant];
-    if (!adapter)
-        throw new Error(`Adapter "${pkgName}" variant "${variant}" not found`);
-
-    return await adapter(...dbOpts as any);
+    return await factory(...dbOpts);
 }

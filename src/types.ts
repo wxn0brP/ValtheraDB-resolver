@@ -7,5 +7,10 @@ export interface Opts {
     force?: string;
 }
 
+export interface ResolvedConfig {
+    pkg: string;
+    variant: string;
+    opts: any[];
+}
+
 export type Adapter = (...args: any[]) => Promise<ActionsBaseInterface> | ActionsBaseInterface;
-export type Adapters = Record<string, Adapter>;

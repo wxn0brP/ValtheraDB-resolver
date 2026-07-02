@@ -1,12 +1,19 @@
 import { Opts, ResolvedConfig } from "./types";
 import { InvalidOptsError } from "./errors";
 
+const adapterAliases: Record<string, string> = {
+    client: "@wxn0brp/db-client"
+};
+
 export function parsePkgSource(pkg: string): string {
     if (pkg.startsWith("@") && pkg.includes("/"))
         return pkg;
 
     if (pkg.startsWith("@"))
         return pkg.slice(1);
+
+    if (adapterAliases[pkg])
+        return adapterAliases[pkg];
 
     return `@wxn0brp/db-storage-${pkg}`;
 }

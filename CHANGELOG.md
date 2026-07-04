@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.111.1-alpha.1](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.111.1-alpha.0...v0.111.1-alpha.1) (2026-07-04)
+
+
+### Features
+
+* improve ScopeBase ([222160f](https://github.com/wxn0brP/ValtheraDB-resolver/commit/222160f08e92107a47692ff39956d1e1c2d97dac))
+
 ### [0.111.1-alpha.0](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.111.0-alpha.0...v0.111.1-alpha.0) (2026-07-04)
 
 ## [0.111.0-alpha.0](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.111.0...v0.111.0-alpha.0) (2026-07-04)

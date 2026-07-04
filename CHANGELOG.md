@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.111.0-alpha.0](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.111.0...v0.111.0-alpha.0) (2026-07-04)
+
+
+### Features
+
+* github install ([8223821](https://github.com/wxn0brP/ValtheraDB-resolver/commit/8223821c72c46504fda1c51781b7650b010251eb))
+* lazy ([019afa6](https://github.com/wxn0brP/ValtheraDB-resolver/commit/019afa6e26fd58fbf70259b791571773b2af88c1))
+
 ## [0.111.0](https://github.com/wxn0brP/ValtheraDB-resolver/compare/v0.110.0...v0.111.0) (2026-07-03)
 
 

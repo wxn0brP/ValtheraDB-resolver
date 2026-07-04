@@ -1,7 +1,7 @@
 import { ValtheraClass } from "@wxn0brp/db-core";
 import { forgeTypedValthera } from "@wxn0brp/db-core/helpers/forge";
 import { Data } from "@wxn0brp/db-core/types/data";
-import { createAdapter } from "./index";
+import { createAdapter } from "./load";
 import { Opts, ValtheraScope } from "./types";
 
 function createAdapterBuilder(pkgName: string, scopeOpts: Opts) {

@@ -5,6 +5,8 @@ import { getPkgPath } from "./module";
 import { Adapter, Opts } from "./types";
 import { getConfig, getInstallName, parsePkgSource } from "./utils";
 
+export { VDB } from "./v";
+
 const cache = new Map<string, Adapter>();
 let memoryActions: any = null;
 

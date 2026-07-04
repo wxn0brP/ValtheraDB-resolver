@@ -5,6 +5,17 @@ const adapterAliases: Record<string, string> = {
     client: "@wxn0brp/db-client"
 };
 
+const noNpmAdapter = [
+    "accdb",
+    "length",
+    "crypt",
+].reduce((acc, key) => {
+    acc[`@wxn0brp/db-storage-${key}`] = `wxn0brP/ValtheraDB-storage-${key}`;
+    return acc;
+}, {
+
+});
+
 export function parsePkgSource(pkg: string): string {
     if (pkg.startsWith("@") && pkg.includes("/"))
         return pkg;
@@ -85,4 +96,10 @@ export function getConfig(opts: Opts): ResolvedConfig {
         variant: "dir",
         opts: opts.opts ?? [`./vdb-data/${name}`]
     }
+}
+
+export function getInstallName(name: string) {
+    if (noNpmAdapter[name])
+        return "github:" + noNpmAdapter[name];
+    return name;
 }

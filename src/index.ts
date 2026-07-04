@@ -3,7 +3,7 @@ import { pathToFileURL } from "url";
 import { AdapterNotFoundError, MissingDynamicError, VariantNotFoundError } from "./errors";
 import { getPkgPath } from "./module";
 import { Adapter, Opts } from "./types";
-import { getConfig, parsePkgSource } from "./utils";
+import { getConfig, getInstallName, parsePkgSource } from "./utils";
 
 const cache = new Map<string, Adapter>();
 let memoryActions: any = null;
@@ -45,7 +45,7 @@ export async function createAdapter(opts: Opts, retry = false) {
     if (!pkgPath && !retry && process.env.NODE_ENV !== "production") {
         const { execSync } = await import("child_process");
         const cmdPrefix = process.isBun ? "bun add" : "npm i";
-        const cmd = `${cmdPrefix} ${pkgName}`;
+        const cmd = `${cmdPrefix} ${getInstallName(pkgName)}`;
         console.log("[ValtheraDB-resolver] Running:", cmd);
         execSync(cmd);
         return await createAdapter(opts, true);

@@ -15,7 +15,7 @@ import { createAdapter } from "@wxn0brp/db-resolver";
 import { ValtheraClass } from "@wxn0brp/db-core";
 
 const adapter = await createAdapter({ name: "master" });
-const db = new ValtheraClass({ adapter });
+const db = new ValtheraClass({ dbAction: adapter });
 ```
 
 ### More Examples

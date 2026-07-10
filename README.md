@@ -8,7 +8,58 @@ A dynamic database adapter resolver for the ValtheraDB ecosystem. Automatically 
 npm i @wxn0brp/db-resolver @wxn0brp/db-core
 ```
 
-## Usage
+## VDB API
+
+```typescript
+import { VDB } from "@wxn0brp/db-resolver";
+
+const db = VDB().dir("./data");
+```
+
+The `VDB(name?)` factory returns a Proxy-based builder. Access any adapter type as a property, then call it with its options.
+
+### Basic Usage
+
+```typescript
+// Named database (affects env var lookup: VALTHERA_CUSTOM_...)
+const db = VDB("custom").dir("./data");
+
+// With typed collections
+const db = VDB<{
+    users: { id: number; name: string };
+    posts: { title: string; body: string };
+}>().dir("./data");
+
+await db.users.add({ id: 1, name: "Ala" });
+await db.posts.add({ title: "Hello", body: "World" });
+```
+
+### Adapter Variants
+
+Some adapters offer multiple implementations via sub-properties:
+
+```typescript
+// SQLite with Bun, Node.js, or better-sqlite3 variant
+VDB().sqlite.bun("db.sqlite");
+VDB().sqlite.node("db.sqlite");
+VDB().sqlite.better("db.sqlite");
+```
+
+### Available Adapters
+
+| Adapter | Call Signature |
+|---------|---------------|
+| `dir` | `VDB().dir(folder, opts?)` |
+| `bin` | `VDB().bin(path, opts?)` |
+| `sqlite` | `VDB().sqlite(file, keys?, opts?)` |
+| `mongodb` | `VDB().mongodb(uri, dbName, opts?)` |
+| `rocks` | `VDB().rocks(location, opts?)` |
+| `crypt` | `VDB().crypt(folder, opts?)` |
+| `client` | `VDB().client(url)` |
+| `accdb` | `VDB().accdb(file, keys?)` |
+| `length` | `VDB().length(opts)` |
+
+## Traditional API (createAdapter)
 
 ```typescript
 import { createAdapter } from "@wxn0brp/db-resolver";
@@ -57,29 +108,6 @@ The resolver determines which database adapter to use based on the following pri
 - `VALTHERA_<NAME>` - Adapter identifier in format `"package"` or `"package:variant"` (e.g., `VALTHERA_MASTER=dir:dir`)
 - `VALTHERA_<NAME>_OPTS` - JSON array of constructor options for the adapter
 - `VALTHERA_RESOLVER_MAX_DEPTH` - Maximum depth to search for adapters
-
-### Package Resolution
-
-The resolver supports multiple package sources for flexible adapter installation:
-
-| Input Format | Resolves To | Description |
-|--------------|-------------|-------------|
-| `"sqlite"` | `@wxn0brp/db-storage-sqlite` | Default ValtheraDB adapters |
-| `"@pkg"` | `pkg` | Scoped package without organization |
-| `"@org/pkg"` | `@org/pkg` | Full scoped package name |
-
-#### Examples
-
-```typescript
-// Use official ValtheraDB SQLite adapter
-await createAdapter({ force: "sqlite" });
-
-// Use a custom adapter from npm
-await createAdapter({ force: "@my-custom-adapter" });
-
-// Use a scoped package
-await createAdapter({ force: "@company/db-adapter" });
-```
 
 This allows installation and use of adapters from different sources, not just the official `@wxn0brp/db-storage-*` packages.
 

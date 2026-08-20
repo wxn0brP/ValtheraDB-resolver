@@ -15,7 +15,7 @@ function createAdapterBuilder(pkgName: string, scopeOpts: Opts) {
 		};
 
 		const vdb = new ValtheraClass({
-			dbAction: () => createAdapter(finalOpts),
+			adapter: () => createAdapter(finalOpts),
 		});
 
 		return forgeTypedValthera(vdb);
